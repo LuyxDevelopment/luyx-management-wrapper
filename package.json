@@ -1,0 +1,32 @@
+{
+	"name": "luyx-management-discord",
+	"version": "1.0.0",
+	"description": "Discord frontend for Luyx Management",
+	"main": "build/index.js",
+	"author": "Luyx",
+	"license": "MIT",
+	"type": "module",
+	"bugs": {
+		"url": "https://github.com/LuyxDevelopment/luyx-management-discord/issues"
+	},
+	"homepage": "https://github.com/LuyxDevelopment/luyx-management-discord#readme",
+	"devDependencies": {
+		"@types/node": "^18.0.3",
+		"@typescript-eslint/eslint-plugin": "^5.30.5",
+		"@typescript-eslint/parser": "^5.30.5",
+		"eslint": "^8.19.0",
+		"typescript": "^4.7.4"
+	},
+	"dependencies": {
+		"axios": "^0.27.2",
+		"chalk": "^5.0.1",
+		"dotenv": "^16.0.1",
+		"luyx-management-api-types": "github:LuyxDevelopment/luyx-management-api-types"
+	},
+	"scripts": {
+		"build": "tsc",
+		"lint": "eslint --cache --fix",
+		"start": "npm run lint && npm run build && node build/index.js",
+		"check": "npm run lint && tsc --noEmit"
+	}
+}
