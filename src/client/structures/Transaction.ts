@@ -2,13 +2,13 @@ import { Transaction, TransactionStage, Wallet } from 'luyx-management-api-types
 
 export class LuyxTransaction implements Transaction {
 	public readonly _id: string;
-	public amount: number;
-	public description: string;
-	public from: Wallet | null;
-	public to: Wallet | null;
-	public timestamp: number;
-	public transactionStage: TransactionStage;
-	public transactionType;
+	public readonly amount: number;
+	public readonly description: string;
+	public readonly from: Wallet | null;
+	public readonly to: Wallet | null;
+	public readonly timestamp: number;
+	public readonly transactionStage: TransactionStage;
+	public readonly transactionType;
 
 	constructor({ _id, amount, description, from, timestamp, to, transactionStage, transactionType }: Transaction) {
 		this._id = _id;
