@@ -5,5 +5,3 @@ export interface DataStructure {
 	transactions: Transaction;
 	users: User;
 }
-
-export type DataStructureOption = keyof DataStructure;

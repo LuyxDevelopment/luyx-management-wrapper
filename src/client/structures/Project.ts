@@ -1,5 +1,5 @@
 /* eslint-disable require-await */
-import { DeleteProjectAssignedRouteOptions, PatchProjectRouteOptions, Project, PutProjectAssignedRouteOptions, StatusCodePhrases, User } from 'luyx-management-api-types/v1';
+import { DeleteProjectAssignedRouteOptions, Project, PutProjectAssignedRouteOptions, StatusCodePhrases, User } from 'luyx-management-api-types/v1';
 import { Base } from './Base.js';
 import { LuyxClient } from './LuyxClient.js';
 import { LuyxUser } from './User.js';
@@ -7,11 +7,11 @@ import { LuyxUser } from './User.js';
 export class LuyxProject extends Base implements Project {
 	public readonly _id: string;
 
-	private _name: string;
-	private _description: string;
-	private _createdAt: number;
-	private _deadline: number;
-	private _gitHubURL: string;
+	public readonly name: string;
+	public readonly description: string;
+	public readonly createdAt: number;
+	public readonly deadline: number;
+	public readonly gitHubURL: string;
 	public readonly assignedUsers: User[];
 	public readonly wallet;
 
@@ -19,32 +19,13 @@ export class LuyxProject extends Base implements Project {
 		super(client);
 
 		this._id = _id;
-		this._name = name;
-		this._description = description;
-		this._createdAt = createdAt;
-		this._deadline = deadline;
-		this._gitHubURL = gitHubURL;
+		this.name = name;
+		this.description = description;
+		this.createdAt = createdAt;
+		this.deadline = deadline;
+		this.gitHubURL = gitHubURL;
 		this.assignedUsers = assignedUsers;
 		this.wallet = wallet;
-	}
-
-	public get name(): string {
-		return this._name;
-	}
-
-	public get description(): string {
-		return this._description;
-	}
-	public get createdAt(): number {
-		return this._createdAt;
-	}
-
-	public get deadline(): number {
-		return this._deadline;
-	}
-
-	public get gitHubURL(): string {
-		return this._gitHubURL;
 	}
 
 	public async assign(user: LuyxUser): Promise<boolean> {
@@ -69,21 +50,5 @@ export class LuyxProject extends Base implements Project {
 		this.assignedUsers.splice(this.assignedUsers.indexOf(user), 1);
 
 		return true;
-	}
-
-	public async edit(data: Partial<Pick<Project, 'createdAt' | 'deadline' | 'description' | 'gitHubURL' | 'name'>>): Promise<Project> {
-		const request = await this.client.axios.patch<PatchProjectRouteOptions['Reply']>(`/projects/${this._id}`, data);
-
-		if (request.data.message !== StatusCodePhrases.PROJECT_UPDATED) {
-			throw new Error(`Error editing project: ${request.data.message}`);
-		}
-
-		this._name = data.name ?? this._name;
-		this._description = data.description ?? this._description;
-		this._createdAt = data.createdAt ?? this._createdAt;
-		this._deadline = data.deadline ?? this._deadline;
-		this._gitHubURL = data.gitHubURL ?? this._gitHubURL;
-
-		return this;
 	}
 }

@@ -1,10 +1,8 @@
 import { Collection } from '@discordjs/collection';
-import { AxiosResponse } from 'axios';
-import { BaseAuthRouteOptions } from 'luyx-management-api-types/v1';
-import { DataStructure, DataStructureOption } from '../../typings/index.js';
+import { DataStructure } from '../../typings/index.js';
 import { LuyxClient } from '../structures/LuyxClient.js';
 
-export abstract class CachedManager<K extends DataStructureOption, D extends DataStructure[K] = DataStructure[K]> {
+export abstract class CachedManager<K extends keyof DataStructure, D extends DataStructure[K] = DataStructure[K]> {
 	public readonly cache: Collection<string, D>;
 	public readonly client: LuyxClient;
 	public readonly route: K;
@@ -15,27 +13,37 @@ export abstract class CachedManager<K extends DataStructureOption, D extends Dat
 		this.route = route;
 	}
 
-	public async create(options: D): Promise<D | null> {
-		const response = await this.client.axios.post<BaseAuthRouteOptions<D>['Reply']>(`/${this.route}`, options);
+	public async get(id: string): Promise<D | void> {
+		const entry = this.cache.get(id);
+		if (entry) return entry;
+
+		const data = await this.fetchDb(id);
+		if (data) return this.addCacheEntry(data);
+	}
+
+	public async create(options: D): Promise<D> {
+		const response = await this.client.axios.post(`/${this.route}`, options);
 
 		const { data, error } = response.data;
 
 		if (!error) {
-			this.cache.set(data!._id, data!);
+			this.cache.set(data!._id, data);
 		}
 
-		return data;
+		return data!;
 	}
 
-	public delete(id: string): Promise<AxiosResponse> {
-		return this.client.axios.delete(`/${this.route}/${id}`);
+	protected addCacheEntry(data: DataStructure[K]): D {
+		const entry = this.resolve(data);
+
+		this.cache.set(data._id, entry);
+
+		return entry;
 	}
 
-	public edit(id: string, data: D): Promise<AxiosResponse> {
-		return this.client.axios.patch(`/${this.route}/${id}`, data);
-	}
-
-	protected fetch(id: string): Promise<AxiosResponse> {
+	protected fetchDb(id: string): Promise<D> {
 		return this.client.axios.get(`/${this.route}/${id}`);
 	}
+
+	protected abstract resolve(data: DataStructure[K]): D;
 }

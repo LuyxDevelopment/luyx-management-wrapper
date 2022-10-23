@@ -1,6 +1,8 @@
 import { Transaction, TransactionStage, Wallet } from 'luyx-management-api-types/v1';
+import { Base } from './Base.js';
+import { LuyxClient } from './LuyxClient.js';
 
-export class LuyxTransaction implements Transaction {
+export class LuyxTransaction extends Base implements Transaction {
 	public readonly _id: string;
 	public readonly amount: number;
 	public readonly description: string;
@@ -10,7 +12,9 @@ export class LuyxTransaction implements Transaction {
 	public readonly transactionStage: TransactionStage;
 	public readonly transactionType;
 
-	constructor({ _id, amount, description, from, timestamp, to, transactionStage, transactionType }: Transaction) {
+	constructor(client: LuyxClient, { _id, amount, description, from, timestamp, to, transactionStage, transactionType }: Transaction) {
+		super(client);
+
 		this._id = _id;
 		this.amount = amount;
 		this.description = description;
