@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import { PostTransactionRouteOptions, Transaction, TransactionStage, TransactionType, Wallet } from 'luyx-management-api-types/v1';
 import { Base } from './Base.js';
-import { LuyxClient } from './LuyxClient.js';
+import { LuyxClient } from '../client/LuyxClient.js';
 
 export class LuyxWallet extends Base implements Wallet {
 	public readonly _id: string;

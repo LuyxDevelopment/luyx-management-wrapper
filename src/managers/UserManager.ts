@@ -1,5 +1,5 @@
 import { User } from 'luyx-management-api-types/v1';
-import { LuyxClient } from '../structures/LuyxClient.js';
+import { LuyxClient } from '../client/LuyxClient.js';
 import { LuyxUser } from '../structures/User.js';
 import { CachedManager } from './CachedManager.js';
 

@@ -1,4 +1,4 @@
-import { LuyxClient } from './LuyxClient.js';
+import { LuyxClient } from '../client/LuyxClient.js';
 
 export abstract class Base {
 	public readonly client: LuyxClient;

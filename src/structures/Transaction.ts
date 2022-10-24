@@ -1,6 +1,6 @@
 import { Transaction, TransactionStage, Wallet } from 'luyx-management-api-types/v1';
 import { Base } from './Base.js';
-import { LuyxClient } from './LuyxClient.js';
+import { LuyxClient } from '../client/LuyxClient.js';
 
 export class LuyxTransaction extends Base implements Transaction {
 	public readonly _id: string;

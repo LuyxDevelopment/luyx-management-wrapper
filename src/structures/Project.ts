@@ -1,7 +1,7 @@
 /* eslint-disable require-await */
 import { DeleteProjectAssignedRouteOptions, Project, PutProjectAssignedRouteOptions, StatusCodePhrases, User } from 'luyx-management-api-types/v1';
 import { Base } from './Base.js';
-import { LuyxClient } from './LuyxClient.js';
+import { LuyxClient } from '../client/LuyxClient.js';
 import { LuyxUser } from './User.js';
 
 export class LuyxProject extends Base implements Project {

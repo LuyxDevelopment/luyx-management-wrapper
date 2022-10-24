@@ -1,6 +1,6 @@
 import { Collection } from '@discordjs/collection';
 import { Project } from 'luyx-management-api-types/v1';
-import { LuyxClient } from '../structures/LuyxClient.js';
+import { LuyxClient } from '../client/LuyxClient.js';
 import { LuyxProject } from '../structures/Project.js';
 import { CachedManager } from './CachedManager.js';
 

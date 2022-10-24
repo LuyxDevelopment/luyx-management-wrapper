@@ -1,6 +1,6 @@
 import { Collection } from '@discordjs/collection';
-import { DataStructure } from '../../typings/index.js';
-import { LuyxClient } from '../structures/LuyxClient.js';
+import { DataStructure } from '../typings/index.js';
+import { LuyxClient } from '../client/LuyxClient.js';
 
 export abstract class CachedManager<K extends keyof DataStructure, D extends DataStructure[K] = DataStructure[K]> {
 	public readonly cache: Collection<string, D>;

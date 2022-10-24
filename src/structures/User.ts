@@ -1,6 +1,6 @@
 import { User, Wallet } from 'luyx-management-api-types/v1';
 import { Base } from './Base.js';
-import { LuyxClient } from './LuyxClient.js';
+import { LuyxClient } from '../client/LuyxClient.js';
 
 export class LuyxUser extends Base implements User {
 	public readonly _id: string;

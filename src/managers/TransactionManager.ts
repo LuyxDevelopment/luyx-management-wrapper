@@ -1,5 +1,5 @@
 import { Transaction } from 'luyx-management-api-types/v1';
-import { LuyxClient } from '../structures/LuyxClient.js';
+import { LuyxClient } from '../client/LuyxClient.js';
 import { LuyxTransaction } from '../structures/Transaction.js';
 import { CachedManager } from './CachedManager.js';
 

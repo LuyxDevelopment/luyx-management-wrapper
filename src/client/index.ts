@@ -1,1 +1,1 @@
-export * from './structures/LuyxClient.js';
+export * from './LuyxClient.js';
