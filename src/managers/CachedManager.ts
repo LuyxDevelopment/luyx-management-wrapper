@@ -1,6 +1,7 @@
 import { Collection } from '@discordjs/collection';
 import { DataStructure } from '../typings/index.js';
 import { LuyxClient } from '../client/LuyxClient.js';
+import { BaseAuthRouteOptions } from 'luyx-management-api-types/v1';
 
 export abstract class CachedManager<K extends keyof DataStructure, D extends DataStructure[K] = DataStructure[K]> {
 	public readonly cache: Collection<string, D>;
@@ -13,11 +14,26 @@ export abstract class CachedManager<K extends keyof DataStructure, D extends Dat
 		this.route = route;
 	}
 
+	public async find(search: D): Promise<Collection<string, D> | void> {
+		const entries = this.cache.filter(e => e === search);
+		if (entries) return entries;
+
+		const documents = await this.fetchManyDocuments(this.queryFormat(search));
+
+		if (!documents) return;
+
+		for (const document of documents) {
+			this.addCacheEntry(document);
+		}
+
+		return this.cache.filter(e => e === search);
+	}
+
 	public async get(id: string): Promise<D | void> {
 		const entry = this.cache.get(id);
 		if (entry) return entry;
 
-		const data = await this.fetchDb(id);
+		const data = await this.fetchSingleDocument(id);
 		if (data) return this.addCacheEntry(data);
 	}
 
@@ -41,8 +57,24 @@ export abstract class CachedManager<K extends keyof DataStructure, D extends Dat
 		return entry;
 	}
 
-	protected fetchDb(id: string): Promise<D> {
-		return this.client.axios.get(`/${this.route}/${id}`);
+	protected queryFormat(q: Partial<D>): string {
+		let query = '';
+
+		const keys = Object.keys(q);
+		for (let i = 0; i < keys.length; ++i) {
+			const val = keys[i]!;
+			query += `&${val}=${q[val as keyof typeof q]}`;
+		}
+
+		return query;
+	}
+
+	protected async fetchSingleDocument(id: string): Promise<D | undefined> {
+		return (await this.client.axios.get<BaseAuthRouteOptions<D>['Reply']>(`/${this.route}/${id}`)).data.data;
+	}
+
+	protected async fetchManyDocuments(queryString: string): Promise<D[] | undefined> {
+		return (await this.client.axios.get<BaseAuthRouteOptions<D[]>['Reply']>(`/${this.route}?${queryString}`)).data.data;
 	}
 
 	protected abstract resolve(data: DataStructure[K]): D;
