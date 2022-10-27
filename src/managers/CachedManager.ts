@@ -1,7 +1,8 @@
 import { Collection } from '@discordjs/collection';
 import { DataStructure } from '../typings/index.js';
 import { LuyxClient } from '../client/LuyxClient.js';
-import { BaseAuthRouteOptions } from 'luyx-management-api-types/v1';
+import { BaseAuthRouteOptions, DeepPartial } from 'luyx-management-api-types/v1';
+import { stringify } from 'node:querystring';
 
 export abstract class CachedManager<K extends keyof DataStructure, D extends DataStructure[K] = DataStructure[K]> {
 	public readonly cache: Collection<string, D>;
@@ -14,11 +15,12 @@ export abstract class CachedManager<K extends keyof DataStructure, D extends Dat
 		this.route = route;
 	}
 
-	public async find(search: D): Promise<Collection<string, D> | void> {
+	public async find(search: DeepPartial<D>): Promise<Collection<string, D> | void> {
 		const entries = this.cache.filter(e => e === search);
 		if (entries) return entries;
 
-		const documents = await this.fetchManyDocuments(this.queryFormat(search));
+		// @ts-ignore
+		const documents = await this.fetchManyDocuments(stringify(search));
 
 		if (!documents) return;
 
@@ -55,18 +57,6 @@ export abstract class CachedManager<K extends keyof DataStructure, D extends Dat
 		this.cache.set(data._id, entry);
 
 		return entry;
-	}
-
-	protected queryFormat(q: Partial<D>): string {
-		let query = '';
-
-		const keys = Object.keys(q);
-		for (let i = 0; i < keys.length; ++i) {
-			const val = keys[i]!;
-			query += `&${val}=${q[val as keyof typeof q]}`;
-		}
-
-		return query;
 	}
 
 	protected async fetchSingleDocument(id: string): Promise<D | undefined> {
