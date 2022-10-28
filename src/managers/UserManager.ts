@@ -8,7 +8,15 @@ export class UserManager extends CachedManager<'users'> {
 		super('users', client);
 	}
 
-	protected resolve(data: User): User {
+	public async findByDiscordId(id: string): Promise<LuyxUser | void> {
+		const entry = this.cache.find(e => e.contact.discordId === id);
+		if (entry) return entry;
+
+		const data = await this.fetchSingleDocument(id);
+		if (data) return this.addCacheEntry(data);
+	}
+
+	protected resolve(data: User): LuyxUser {
 		return new LuyxUser(this.client, data);
 	}
 }
