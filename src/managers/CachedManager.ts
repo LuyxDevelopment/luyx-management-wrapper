@@ -1,11 +1,10 @@
 import { Collection } from '@discordjs/collection';
-import { DataStructure } from '../typings/index.js';
+import { DataInterface, DataStructure } from '../typings/index.js';
 import { LuyxClient } from '../client/LuyxClient.js';
-import { BaseAuthRouteOptions, DeepPartial } from 'luyx-management-api-types/v1';
-import { stringify } from 'node:querystring';
+import { BaseAuthRouteOptions } from 'luyx-management-api-types/v1';
 
-export abstract class CachedManager<K extends keyof DataStructure, D extends DataStructure[K] = DataStructure[K]> {
-	public readonly cache: Collection<string, D>;
+export abstract class CachedManager<K extends keyof DataStructure, S extends DataStructure[K] = DataStructure[K], I extends DataInterface[K] = DataInterface[K]> {
+	public readonly cache: Collection<string, S>;
 	public readonly client: LuyxClient;
 	public readonly route: K;
 
@@ -15,23 +14,7 @@ export abstract class CachedManager<K extends keyof DataStructure, D extends Dat
 		this.route = route;
 	}
 
-	public async find(search: DeepPartial<D>): Promise<Collection<string, D> | void> {
-		const entries = this.cache.filter(e => e === search);
-		if (entries) return entries;
-
-		// @ts-ignore
-		const documents = await this.fetchManyDocuments(stringify(search));
-
-		if (!documents) return;
-
-		for (const document of documents) {
-			this.addCacheEntry(document);
-		}
-
-		return this.cache.filter(e => e === search);
-	}
-
-	public async get(id: string): Promise<D | void> {
+	public async get(id: string): Promise<S | void> {
 		const entry = this.cache.get(id);
 		if (entry) return entry;
 
@@ -39,7 +22,7 @@ export abstract class CachedManager<K extends keyof DataStructure, D extends Dat
 		if (data) return this.addCacheEntry(data);
 	}
 
-	public async create(options: D): Promise<D> {
+	public async create(options: S): Promise<S> {
 		const response = await this.client.axios.post(`/${this.route}`, options);
 
 		const { data, error } = response.data;
@@ -51,7 +34,7 @@ export abstract class CachedManager<K extends keyof DataStructure, D extends Dat
 		return data!;
 	}
 
-	protected addCacheEntry(data: DataStructure[K]): D {
+	protected addCacheEntry(data: I): S {
 		const entry = this.resolve(data);
 
 		this.cache.set(data._id, entry);
@@ -59,13 +42,13 @@ export abstract class CachedManager<K extends keyof DataStructure, D extends Dat
 		return entry;
 	}
 
-	protected async fetchSingleDocument(id: string): Promise<D | undefined> {
-		return (await this.client.axios.get<BaseAuthRouteOptions<D>['Reply']>(`/${this.route}/${id}`)).data.data;
+	protected async fetchSingleDocument(id: string): Promise<I | null> {
+		return (await this.client.axios.get<BaseAuthRouteOptions<I>['Reply']>(`/${this.route}/${id}`)).data.data;
 	}
 
-	protected async fetchManyDocuments(queryString: string): Promise<D[] | undefined> {
-		return (await this.client.axios.get<BaseAuthRouteOptions<D[]>['Reply']>(`/${this.route}?${queryString}`)).data.data;
+	protected async fetchManyDocuments(queryString: string): Promise<I[] | null> {
+		return (await this.client.axios.get<BaseAuthRouteOptions<I[]>['Reply']>(`/${this.route}?${queryString}`)).data.data;
 	}
 
-	protected abstract resolve(data: DataStructure[K]): D;
+	protected abstract resolve(data: I): S;
 }

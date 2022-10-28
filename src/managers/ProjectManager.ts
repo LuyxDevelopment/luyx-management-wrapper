@@ -8,7 +8,7 @@ export class ProjectManager extends CachedManager<'projects'> {
 		super('projects', client);
 	}
 
-	protected resolve(data: Project): Project {
+	protected resolve(data: Project): LuyxProject {
 		return new LuyxProject(this.client, data);
 	}
 }

@@ -8,7 +8,7 @@ export class TransactionManager extends CachedManager<'transactions'> {
 		super('transactions', client);
 	}
 
-	protected resolve(data: Transaction): Transaction {
+	protected resolve(data: Transaction): LuyxTransaction {
 		return new LuyxTransaction(this.client, data);
 	}
 }
