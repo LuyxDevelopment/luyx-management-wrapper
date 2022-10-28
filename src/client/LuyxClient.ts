@@ -14,7 +14,13 @@ export class LuyxClient {
 
 		if (!token) throw Error('API token is required for authenitcation.');
 
-		this.axios = new Axios({ baseURL: 'https://api.luyx.dev/v1', headers: { authorization: token } });
+		this.axios = new Axios({
+			baseURL: 'https://api.luyx.dev/v1',
+			headers: { authorization: token },
+			responseType: 'json',
+			responseEncoding: 'utf-8',
+			transformResponse: (res): unknown => (JSON.parse(res)),
+		});
 
 		this.projects = new ProjectManager(this);
 		this.transactions = new TransactionManager(this);
