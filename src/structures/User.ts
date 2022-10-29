@@ -5,17 +5,18 @@ import { LuyxClient } from '../client/LuyxClient.js';
 export class LuyxUser extends Base implements User {
 	public readonly _id: string;
 	public alias: string;
-	public contact: User['contact'];
 	public firstName: string;
 	public lastName: string;
+	public contact: User['contact'];
+	public hiredAt: number;
 	public info: User['info'];
 	public positions: UserPosition[];
-	public hiredAt: number;
 	public authorityLevel: AuthorityLevel;
+	public visibility: 'public' | 'private';
 	public readonly projects: number;
 	public readonly wallet: Wallet;
 
-	constructor(client: LuyxClient, { _id, alias, contact, firstName, hiredAt, info, positions, lastName, wallet, projects, authorityLevel }: User) {
+	constructor(client: LuyxClient, { _id, alias, firstName, lastName, contact, hiredAt, info, authorityLevel, positions, visibility, wallet, projects }: User) {
 		super(client);
 
 		this._id = _id;
@@ -27,6 +28,7 @@ export class LuyxUser extends Base implements User {
 		this.positions = positions;
 		this.lastName = lastName;
 		this.authorityLevel = authorityLevel;
+		this.visibility = visibility;
 		this.projects = projects;
 		this.wallet = wallet;
 	}
@@ -57,6 +59,10 @@ export class LuyxUser extends Base implements User {
 		this.positions.splice(this.positions.indexOf(position), 1);
 
 		return this.edit({ positions: this.positions });
+	}
+
+	public setPrivate(visibility: 'public' | 'private'): Promise<LuyxUser> {
+		return this.edit({ visibility });
 	}
 
 	public edit(data: PatchUserRouteOptions['Body']): Promise<LuyxUser> {
