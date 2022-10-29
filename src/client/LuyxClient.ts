@@ -4,7 +4,7 @@ import { TransactionManager } from '../managers/TransactionManager.js';
 import { UserManager } from '../managers/UserManager.js';
 
 export class LuyxClient {
-	public readonly axios: Axios;
+	public readonly rest: Axios;
 
 	public readonly projects: ProjectManager;
 	public readonly transactions: TransactionManager;
@@ -14,7 +14,7 @@ export class LuyxClient {
 
 		if (!token) throw Error('API token is required for authenitcation.');
 
-		this.axios = new Axios({
+		this.rest = new Axios({
 			baseURL: 'https://api.luyx.dev/v1',
 			headers: { authorization: token },
 			responseType: 'json',
