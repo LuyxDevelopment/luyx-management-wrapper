@@ -1,9 +1,9 @@
 import { Collection } from '@discordjs/collection';
-import { DataBuild, DataInterface, DataStructure } from '../typings/index.js';
+import { DataInterface, DataStructure } from '../typings/index.js';
 import { LuyxClient } from '../client/LuyxClient.js';
 import { BaseAuthRouteOptions } from 'luyx-management-api-types/v1';
 
-export abstract class CachedManager<K extends keyof DataStructure, S extends DataStructure[K] = DataStructure[K], I extends DataInterface[K] = DataInterface[K], C extends DataBuild[K] = DataBuild[K]> {
+export abstract class CachedManager<K extends keyof DataStructure, S extends DataStructure[K] = DataStructure[K], I extends DataInterface[K] = DataInterface[K]> {
 	public readonly cache: Collection<string, S>;
 	public readonly client: LuyxClient;
 	public readonly route: K;
@@ -20,18 +20,6 @@ export abstract class CachedManager<K extends keyof DataStructure, S extends Dat
 
 		const data = await this.fetchSingleDocument(id);
 		if (data) return this.addCacheEntry(data);
-	}
-
-	public async create(options: C): Promise<S> {
-		const response = await this.client.rest.post<BaseAuthRouteOptions<I>['Reply']>(`/${this.route}`, options);
-
-		const { data, error, message } = response.data;
-
-		if (error) {
-			throw new Error(message);
-		}
-
-		return this.addCacheEntry(data!);
 	}
 
 	protected addCacheEntry(data: I): S {
