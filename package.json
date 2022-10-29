@@ -11,10 +11,10 @@
 	},
 	"homepage": "https://github.com/LuyxDevelopment/luyx-management-wrapper#readme",
 	"devDependencies": {
-		"@types/node": "^18.11.4",
+		"@types/node": "^18.11.7",
 		"@typescript-eslint/eslint-plugin": "^5.30.5",
 		"@typescript-eslint/parser": "^5.30.5",
-		"eslint": "^8.25.0",
+		"eslint": "^8.26.0",
 		"typescript": "^4.8.4"
 	},
 	"dependencies": {
