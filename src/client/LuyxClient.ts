@@ -5,7 +5,6 @@ import { UserManager } from '../managers/UserManager.js';
 
 export class LuyxClient {
 	public readonly rest: Axios;
-
 	public readonly projects: ProjectManager;
 	public readonly transactions: TransactionManager;
 	public readonly users: UserManager;
