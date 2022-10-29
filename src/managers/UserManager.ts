@@ -1,4 +1,4 @@
-import { User } from 'luyx-management-api-types/v1';
+import { PatchUserRouteOptions, User } from 'luyx-management-api-types/v1';
 import { LuyxClient } from '../client/LuyxClient.js';
 import { LuyxUser } from '../structures/User.js';
 import { CachedManager } from './CachedManager.js';
@@ -14,6 +14,10 @@ export class UserManager extends CachedManager<'users'> {
 
 		const data = await this.fetchSingleDocument(id);
 		if (data) return this.addCacheEntry(data);
+	}
+
+	public async edit(user: LuyxUser, data: PatchUserRouteOptions['Body']): Promise<LuyxUser> {
+		return user = this.resolve((await this.client.rest.patch<PatchUserRouteOptions['Reply']>(`/users/${user._id}`, data)).data.data!);
 	}
 
 	protected resolve(data: User): LuyxUser {

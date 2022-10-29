@@ -23,15 +23,15 @@ export abstract class CachedManager<K extends keyof DataStructure, S extends Dat
 	}
 
 	public async create(options: S): Promise<S> {
-		const response = await this.client.axios.post(`/${this.route}`, options);
+		const response = await this.client.rest.post<BaseAuthRouteOptions<I>['Reply']>(`/${this.route}`, options);
 
-		const { data, error } = response.data;
+		const { data, error, message } = response.data;
 
-		if (!error) {
-			this.cache.set(data!._id, data);
+		if (error) {
+			throw new Error(message);
 		}
 
-		return data!;
+		return this.addCacheEntry(data!);
 	}
 
 	protected addCacheEntry(data: I): S {
@@ -43,11 +43,7 @@ export abstract class CachedManager<K extends keyof DataStructure, S extends Dat
 	}
 
 	protected async fetchSingleDocument(id: string): Promise<I | null> {
-		return (await this.client.axios.get<BaseAuthRouteOptions<I>['Reply']>(`/${this.route}/${id}`)).data.data;
-	}
-
-	protected async fetchManyDocuments(queryString: string): Promise<I[] | null> {
-		return (await this.client.axios.get<BaseAuthRouteOptions<I[]>['Reply']>(`/${this.route}?${queryString}`)).data.data;
+		return (await this.client.rest.get<BaseAuthRouteOptions<I>['Reply']>(`/${this.route}/${id}`)).data.data;
 	}
 
 	protected abstract resolve(data: I): S;

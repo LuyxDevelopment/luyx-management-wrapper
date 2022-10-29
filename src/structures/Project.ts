@@ -6,16 +6,15 @@ import { LuyxUser } from './User.js';
 
 export class LuyxProject extends Base implements Project {
 	public readonly _id: string;
-
-	public readonly name: string;
-	public readonly description: string;
-	public readonly createdAt: number;
-	public readonly deadline: number;
-	public readonly gitHubURL: string;
+	public name: string;
+	public description: string;
+	public createdAt: number;
+	public deadline: number;
+	public gitHubURL: string;
 	public readonly assignedUsers: User[];
 	public readonly wallet;
 
-	constructor(client: LuyxClient, { _id, assignedUsers, createdAt, deadline, description, gitHubURL, name, wallet }: Project) {
+	public constructor(client: LuyxClient, { _id, assignedUsers, createdAt, deadline, description, gitHubURL, name, wallet }: Project) {
 		super(client);
 
 		this._id = _id;
@@ -29,7 +28,7 @@ export class LuyxProject extends Base implements Project {
 	}
 
 	public async assign(user: LuyxUser): Promise<boolean> {
-		const request = await this.client.axios.put<PutProjectAssignedRouteOptions['Reply']>(`/projects/${this._id}/assigned/${user._id}`);
+		const request = await this.client.rest.put<PutProjectAssignedRouteOptions['Reply']>(`/projects/${this._id}/assigned/${user._id}`);
 
 		if (request.data.message !== StatusCodePhrases.PROJECT_USER_ASSIGNED) {
 			throw new Error(`Error assigning user: ${request.data.message}`);
@@ -41,7 +40,7 @@ export class LuyxProject extends Base implements Project {
 	}
 
 	public async unassign(user: LuyxUser): Promise<boolean> {
-		const request = await this.client.axios.delete<DeleteProjectAssignedRouteOptions['Reply']>(`/projects/${this._id}/assigned/${user._id}`);
+		const request = await this.client.rest.delete<DeleteProjectAssignedRouteOptions['Reply']>(`/projects/${this._id}/assigned/${user._id}`);
 
 		if (request.data.message !== StatusCodePhrases.PROJECT_USER_UNASSIGNED) {
 			throw new Error(`Error unassigning user: ${request.data.message}`);
@@ -50,5 +49,9 @@ export class LuyxProject extends Base implements Project {
 		this.assignedUsers.splice(this.assignedUsers.indexOf(user), 1);
 
 		return true;
+	}
+
+	public edit(data: Project): Promise<LuyxProject> {
+		return this.client.projects.edit(this, data);
 	}
 }
