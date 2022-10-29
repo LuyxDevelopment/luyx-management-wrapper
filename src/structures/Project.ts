@@ -7,7 +7,7 @@ import { LuyxUser } from './User.js';
 export class LuyxProject extends Base implements Project {
 	public readonly _id: string;
 	public name: string;
-	public description: string;
+	public description: string | null;
 	public createdAt: number;
 	public deadline: number;
 	public gitHubURL: string;
