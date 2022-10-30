@@ -23,10 +23,12 @@ export abstract class CachedManager<K extends keyof DataStructure, S extends Dat
 	}
 
 	public async fetchAll(): Promise<Collection<string, S>> {
-		const data = (await this.client.rest.get<BaseAuthRouteOptions<I[]>['Reply']>(`/${this.route}`)).data.data!;
+		const data = (await this.client.rest.get<BaseAuthRouteOptions<I[]>['Reply']>(`/${this.route}`)).data.data;
 
-		for (const doc of data) {
-			this.addCacheEntry(doc);
+		if (data) {
+			for (const doc of data) {
+				this.addCacheEntry(doc);
+			}
 		}
 
 		return this.cache;
