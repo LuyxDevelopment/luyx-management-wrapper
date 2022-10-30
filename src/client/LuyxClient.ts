@@ -16,6 +16,9 @@ export class LuyxClient {
 		this.rest = axios.create({
 			baseURL: 'https://api.luyx.dev/v1',
 			headers: { authorization: token },
+			validateStatus: (): boolean => {
+				return true;
+			},
 		});
 
 		this.projects = new ProjectManager(this);
