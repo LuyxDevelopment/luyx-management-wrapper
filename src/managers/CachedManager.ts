@@ -22,6 +22,16 @@ export abstract class CachedManager<K extends keyof DataStructure, S extends Dat
 		if (data) return this.addCacheEntry(data);
 	}
 
+	public async fetchAll(): Promise<Collection<string, S>> {
+		const data = (await this.client.rest.get<BaseAuthRouteOptions<I[]>['Reply']>(`/${this.route}`)).data.data!;
+
+		for (const doc of data) {
+			this.addCacheEntry(doc);
+		}
+
+		return this.cache;
+	}
+
 	protected addCacheEntry(data: I): S {
 		const entry = this.resolve(data);
 
@@ -32,16 +42,6 @@ export abstract class CachedManager<K extends keyof DataStructure, S extends Dat
 
 	protected async fetchSingleDocument(id: string): Promise<I | null> {
 		return (await this.client.rest.get<BaseAuthRouteOptions<I>['Reply']>(`/${this.route}/${id}`)).data.data;
-	}
-
-	protected async fetchAll(): Promise<Collection<string, S>> {
-		const data = (await this.client.rest.get<BaseAuthRouteOptions<I[]>['Reply']>(`/${this.route}`)).data.data!;
-
-		for (const doc of data) {
-			this.addCacheEntry(doc);
-		}
-
-		return this.cache;
 	}
 
 	protected abstract resolve(data: I): S;
