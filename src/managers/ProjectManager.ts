@@ -10,19 +10,24 @@ export class ProjectManager extends CachedManager<'projects'> {
 	}
 
 	public async create(options: Pick<Project, 'deadline' | 'description' | 'name'>): Promise<LuyxProject> {
-		const response = await this.client.rest.post<PostProjectRouteOptions['Reply'], AxiosResponse<PostProjectRouteOptions['Reply']>, PostProjectRouteOptions['Body']>(`/${this.route}`, options);
-
-		const { data, error, message } = response.data;
-
-		if (error) {
+		const { data, error, message } = (await this.client.rest.post<PostProjectRouteOptions['Reply'], AxiosResponse<PostProjectRouteOptions['Reply']>, PostProjectRouteOptions['Body']>(`/${this.route}`, options)).data;
+	
+		if (error || !data) {
 			throw new Error(message);
 		}
 
-		return this.addCacheEntry(data!);
+		return this.addCacheEntry(data);
 	}
 
-	public async edit(project: LuyxProject, body: PatchProjectRouteOptions['Body']): Promise<LuyxProject> {
-		return project = this.resolve((await this.client.rest.patch<PatchProjectRouteOptions['Reply']>(`/projects/${project._id}`, body)).data.data!);
+	public async edit(project: LuyxProject, options: PatchProjectRouteOptions['Body']): Promise<LuyxProject> {
+
+		const { data, error, message } = (await this.client.rest.patch<PatchProjectRouteOptions['Reply']>(`/${this.route}/${project._id}`, options)).data;
+
+		if (error || !data) {
+			throw new Error(message);
+		}
+
+		return project = this.resolve(data);
 	}
 
 	public async import(body: Pick<Project, 'deadline' | 'gitHubURL' | 'name'>): Promise<LuyxProject> {
@@ -30,11 +35,11 @@ export class ProjectManager extends CachedManager<'projects'> {
 
 		const { data, error, message } = response.data;
 
-		if (error) {
+		if (error || !data) {
 			throw new Error(message);
 		}
 
-		return this.addCacheEntry(data!);
+		return this.addCacheEntry(data);
 	}
 
 	protected resolve(data: Project): LuyxProject {

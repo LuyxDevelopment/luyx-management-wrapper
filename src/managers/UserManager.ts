@@ -10,15 +10,13 @@ export class UserManager extends CachedManager<'users'> {
 	}
 
 	public async create(options: PostUserRouteOptions['Body']): Promise<LuyxUser> {
-		const response = await this.client.rest.post<PostUserRouteOptions['Reply'], AxiosResponse<PostUserRouteOptions['Reply']>, PostUserRouteOptions['Body']>(`/${this.route}`, options);
+		const { data, error, message } = (await this.client.rest.post<PostUserRouteOptions['Reply'], AxiosResponse<PostUserRouteOptions['Reply']>, PostUserRouteOptions['Body']>(`/${this.route}`, options)).data;
 
-		const { data, error, message } = response.data;
-
-		if (error) {
+		if (error || !data) {
 			throw new Error(message);
 		}
 
-		return this.addCacheEntry(data!);
+		return this.addCacheEntry(data);
 	}
 
 	public async findByDiscordId(id: string): Promise<LuyxUser | void> {
@@ -29,8 +27,12 @@ export class UserManager extends CachedManager<'users'> {
 		if (data) return this.addCacheEntry(data);
 	}
 
-	public async edit(user: LuyxUser, data: PatchUserRouteOptions['Body']): Promise<LuyxUser> {
-		return user = this.resolve((await this.client.rest.patch<PatchUserRouteOptions['Reply']>(`/users/${user._id}`, data)).data.data!);
+	public async edit(user: LuyxUser, options: PatchUserRouteOptions['Body']): Promise<LuyxUser> {
+		const { data, error, message } = (await this.client.rest.patch<PatchUserRouteOptions['Reply']>(`/${this.route}/${user._id}`, options)).data;
+
+		if (error || !data) throw new Error(message);
+
+		return user = this.resolve(data);
 	}
 
 	protected resolve(data: User): LuyxUser {
