@@ -11,7 +11,7 @@ export class ProjectManager extends CachedManager<'projects'> {
 
 	public async create(options: Pick<Project, 'deadline' | 'description' | 'name'>): Promise<LuyxProject> {
 		const { data, error, message } = (await this.client.rest.post<PostProjectRouteOptions['Reply'], AxiosResponse<PostProjectRouteOptions['Reply']>, PostProjectRouteOptions['Body']>(`/${this.route}`, options)).data;
-	
+
 		if (error || !data) {
 			throw new Error(message);
 		}
@@ -31,9 +31,7 @@ export class ProjectManager extends CachedManager<'projects'> {
 	}
 
 	public async import(body: Pick<Project, 'deadline' | 'gitHubURL' | 'name'>): Promise<LuyxProject> {
-		const response = await this.client.rest.post<PostProjectRouteOptions['Reply'], AxiosResponse<PostProjectRouteOptions['Reply']>, Pick<Project, 'deadline' | 'gitHubURL' | 'name'>>(`/${this.route}`, body);
-
-		const { data, error, message } = response.data;
+		const { data, error, message } = (await this.client.rest.post<PostProjectRouteOptions['Reply'], AxiosResponse<PostProjectRouteOptions['Reply']>, Pick<Project, 'deadline' | 'gitHubURL' | 'name'>>(`/${this.route}`, body)).data;
 
 		if (error || !data) {
 			throw new Error(message);
