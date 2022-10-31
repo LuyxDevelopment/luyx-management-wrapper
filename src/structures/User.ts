@@ -1,22 +1,22 @@
-import { AuthorityLevel, PatchUserRouteOptions, User, UserPosition, Wallet } from 'luyx-management-api-types/v1';
+import { AuthorityLevel, PatchUserRouteOptions, User, UserPosition } from 'luyx-management-api-types/v1';
 import { Base } from './Base.js';
 import { LuyxClient } from '../client/LuyxClient.js';
 
 export class LuyxUser extends Base implements User {
-	public readonly _id: string;
-	public alias: string;
-	public firstName: string;
-	public lastName: string;
-	public contact: User['contact'];
-	public hiredAt: number;
-	public info: User['info'];
-	public positions: UserPosition[];
-	public authorityLevel: AuthorityLevel;
-	public visibility: 'public' | 'private';
-	public readonly projects: number;
-	public readonly wallet: Wallet;
+	public readonly _id;
+	public readonly alias;
+	public readonly firstName;
+	public readonly lastName;
+	public readonly contact;
+	public readonly hiredAt;
+	public readonly info;
+	public readonly positions;
+	public readonly authorityLevel;
+	public readonly isPrivate;
+	public readonly projects;
+	public readonly wallet;
 
-	constructor(client: LuyxClient, { _id, alias, firstName, lastName, contact, hiredAt, info, authorityLevel, positions, visibility, wallet, projects }: User) {
+	constructor(client: LuyxClient, { _id, alias, firstName, lastName, contact, hiredAt, info, authorityLevel, positions, isPrivate, wallet, projects }: User) {
 		super(client);
 
 		this._id = _id;
@@ -28,7 +28,7 @@ export class LuyxUser extends Base implements User {
 		this.positions = positions;
 		this.lastName = lastName;
 		this.authorityLevel = authorityLevel;
-		this.visibility = visibility;
+		this.isPrivate = isPrivate;
 		this.projects = projects;
 		this.wallet = wallet;
 	}
@@ -61,11 +61,11 @@ export class LuyxUser extends Base implements User {
 		return this.edit({ positions: this.positions });
 	}
 
-	public setPrivate(visibility: 'public' | 'private'): Promise<LuyxUser> {
-		return this.edit({ visibility });
+	public setPrivate(isPrivate: boolean): Promise<LuyxUser> {
+		return this.edit({ isPrivate });
 	}
 
-	public edit(data: PatchUserRouteOptions['Body']): Promise<LuyxUser> {
+	private edit(data: PatchUserRouteOptions['Body']): Promise<LuyxUser> {
 		return this.client.users.edit(this, data);
 	}
 }
