@@ -13,7 +13,7 @@ export class ProjectManager extends CachedManager<'projects'> {
 		const { data, error, message } = (await this.client.rest.post<PostProjectRouteOptions['Reply'], AxiosResponse<PostProjectRouteOptions['Reply']>, PostProjectRouteOptions['Body']>(`/${this.route}`, options)).data;
 
 		if (error || !data) {
-			throw new Error(message);
+			throw new Error(message || 'API Unreachable.');
 		}
 
 		return this.addCacheEntry(data);
@@ -24,7 +24,7 @@ export class ProjectManager extends CachedManager<'projects'> {
 		const { data, error, message } = (await this.client.rest.patch<PatchProjectRouteOptions['Reply']>(`/${this.route}/${project._id}`, options)).data;
 
 		if (error || !data) {
-			throw new Error(message);
+			throw new Error(message || 'API Unreachable.');
 		}
 
 		return project = this.resolve(data);
@@ -34,7 +34,7 @@ export class ProjectManager extends CachedManager<'projects'> {
 		const { data, error, message } = (await this.client.rest.post<PostProjectRouteOptions['Reply'], AxiosResponse<PostProjectRouteOptions['Reply']>, Pick<Project, 'deadline' | 'gitHubURL' | 'name'>>(`/${this.route}`, body)).data;
 
 		if (error || !data) {
-			throw new Error(message);
+			throw new Error(message || 'API Unreachable.');
 		}
 
 		return this.addCacheEntry(data);

@@ -13,7 +13,7 @@ export class UserManager extends CachedManager<'users'> {
 		const { data, error, message } = (await this.client.rest.post<PostUserRouteOptions['Reply'], AxiosResponse<PostUserRouteOptions['Reply']>, PostUserRouteOptions['Body']>(`/${this.route}`, options)).data;
 
 		if (error || !data) {
-			throw new Error(message);
+			throw new Error(message || 'API Unreachable.');
 		}
 
 		return this.addCacheEntry(data);
