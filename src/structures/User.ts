@@ -5,6 +5,7 @@ import { LuyxClient } from '../client/LuyxClient.js';
 export class LuyxUser extends Base implements User {
 	public readonly _id;
 	public readonly alias;
+	public readonly avatar;
 	public readonly firstName;
 	public readonly lastName;
 	public readonly contact;
@@ -16,11 +17,12 @@ export class LuyxUser extends Base implements User {
 	public readonly projects;
 	public readonly wallet;
 
-	constructor(client: LuyxClient, { _id, alias, firstName, lastName, contact, hiredAt, info, authorityLevel, positions, isPrivate, wallet, projects }: User) {
+	constructor(client: LuyxClient, { _id, alias, avatar, firstName, lastName, contact, hiredAt, info, authorityLevel, positions, isPrivate, wallet, projects }: User) {
 		super(client);
 
 		this._id = _id;
 		this.alias = alias;
+		this.avatar = avatar;
 		this.contact = contact;
 		this.firstName = firstName;
 		this.hiredAt = hiredAt;
