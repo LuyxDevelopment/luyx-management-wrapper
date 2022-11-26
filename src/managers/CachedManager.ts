@@ -1,7 +1,9 @@
-import { Collection } from '@discordjs/collection';
-import { DataInterface, DataStructure } from '../typings/index.js';
-import { LuyxClient } from '../client/LuyxClient.js';
 import { BaseAuthRouteOptions } from 'luyx-management-api-types/v1';
+
+import { Collection } from '@discordjs/collection';
+
+import { LuyxClient } from '../client/LuyxClient.js';
+import { DataInterface, DataStructure } from '../typings/index.js';
 
 export abstract class CachedManager<K extends keyof DataStructure, S extends DataStructure[K] = DataStructure[K], I extends DataInterface[K] = DataInterface[K]> {
 	public readonly cache: Collection<string, S>;

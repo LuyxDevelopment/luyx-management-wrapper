@@ -1,10 +1,13 @@
 /* eslint-disable require-await */
-import { DeleteProjectAssignedRouteOptions, Project, PutProjectAssignedRouteOptions, StatusCodePhrases } from 'luyx-management-api-types/v1';
-import { Base } from './Base.js';
+import {
+	APIProject, DeleteProjectAssignedRouteOptions, PutProjectAssignedRouteOptions, StatusCodePhrases,
+} from 'luyx-management-api-types/v1';
+
 import { LuyxClient } from '../client/LuyxClient.js';
+import { Base } from './Base.js';
 import { LuyxUser } from './User.js';
 
-export class LuyxProject extends Base implements Project {
+export class LuyxProject extends Base implements APIProject {
 	public readonly _id;
 	public readonly name;
 	public readonly description;
@@ -14,7 +17,7 @@ export class LuyxProject extends Base implements Project {
 	public readonly assignedUsers;
 	public readonly wallet;
 
-	public constructor(client: LuyxClient, { _id, assignedUsers, createdAt, deadline, description, gitHubURL, name, wallet }: Project) {
+	public constructor(client: LuyxClient, { _id, assignedUsers, createdAt, deadline, description, gitHubURL, name, wallet }: APIProject) {
 		super(client);
 
 		this._id = _id;
@@ -51,7 +54,7 @@ export class LuyxProject extends Base implements Project {
 		return true;
 	}
 
-	private edit(data: Project): Promise<LuyxProject> {
+	private edit(data: APIProject): Promise<LuyxProject> {
 		return this.client.projects.edit(this, data);
 	}
 }

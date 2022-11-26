@@ -1,8 +1,9 @@
-import { Transaction } from 'luyx-management-api-types/v1';
-import { Base } from './Base.js';
-import { LuyxClient } from '../client/LuyxClient.js';
+import { APITransaction } from 'luyx-management-api-types/v1';
 
-export class LuyxTransaction extends Base implements Transaction {
+import { LuyxClient } from '../client/LuyxClient.js';
+import { Base } from './Base.js';
+
+export class LuyxTransaction extends Base implements APITransaction {
 	public readonly _id;
 	public readonly amount;
 	public readonly description;
@@ -12,7 +13,7 @@ export class LuyxTransaction extends Base implements Transaction {
 	public readonly transactionStage;
 	public readonly transactionType;
 
-	constructor(client: LuyxClient, { _id, amount, description, from, timestamp, to, transactionStage, transactionType }: Transaction) {
+	constructor(client: LuyxClient, { _id, amount, description, from, timestamp, to, transactionStage, transactionType }: APITransaction) {
 		super(client);
 
 		this._id = _id;

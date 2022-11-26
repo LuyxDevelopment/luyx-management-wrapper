@@ -1,8 +1,11 @@
-import { AuthorityLevel, PatchUserRouteOptions, User, UserPosition } from 'luyx-management-api-types/v1';
-import { Base } from './Base.js';
-import { LuyxClient } from '../client/LuyxClient.js';
+import {
+	APIUser, AuthorityLevel, PatchUserRouteOptions, UserPositionTitle, UserSubPosition,
+} from 'luyx-management-api-types/v1';
 
-export class LuyxUser extends Base implements User {
+import { LuyxClient } from '../client/LuyxClient.js';
+import { Base } from './Base.js';
+
+export class LuyxUser extends Base implements APIUser {
 	public readonly _id;
 	public readonly alias;
 	public readonly avatar;
@@ -11,13 +14,14 @@ export class LuyxUser extends Base implements User {
 	public readonly contact;
 	public readonly hiredAt;
 	public readonly info;
-	public readonly positions;
+	public readonly position: UserPositionTitle;
+	public readonly subPositions: UserSubPosition[];
 	public readonly authorityLevel;
 	public readonly isPrivate;
 	public readonly projects;
 	public readonly wallet;
 
-	constructor(client: LuyxClient, { _id, alias, avatar, firstName, lastName, contact, hiredAt, info, authorityLevel, positions, isPrivate, wallet, projects }: User) {
+	constructor(client: LuyxClient, { _id, alias, avatar, firstName, lastName, contact, hiredAt, info, authorityLevel, position, subPositions, isPrivate, wallet, projects }: APIUser) {
 		super(client);
 
 		this._id = _id;
@@ -27,7 +31,8 @@ export class LuyxUser extends Base implements User {
 		this.firstName = firstName;
 		this.hiredAt = hiredAt;
 		this.info = info;
-		this.positions = positions;
+		this.position = position;
+		this.subPositions = subPositions;
 		this.lastName = lastName;
 		this.authorityLevel = authorityLevel;
 		this.isPrivate = isPrivate;
@@ -43,24 +48,28 @@ export class LuyxUser extends Base implements User {
 		return this.edit({ authorityLevel });
 	}
 
-	public addPosition(position: UserPosition): Promise<LuyxUser> {
-		if (this.positions.includes(position.toLowerCase() as UserPosition)) {
+	public addSubPosition(position: UserSubPosition): Promise<LuyxUser> {
+		if (this.subPositions.includes(position.toLowerCase() as UserSubPosition)) {
 			throw new Error('User already has position');
 		}
 
-		this.positions.push(position);
+		this.subPositions.push(position);
 
-		return this.edit({ positions: this.positions });
+		return this.edit({ subPositions: this.subPositions });
 	}
 
-	public removePosition(position: UserPosition): Promise<LuyxUser> {
-		if (!this.positions.includes(position.toLowerCase() as UserPosition)) {
+	public removeSubPosition(position: UserSubPosition): Promise<LuyxUser> {
+		if (!this.subPositions.includes(position.toLowerCase() as UserSubPosition)) {
 			throw new Error('User does not have position.');
 		}
 
-		this.positions.splice(this.positions.indexOf(position), 1);
+		this.subPositions.splice(this.subPositions.indexOf(position), 1);
 
-		return this.edit({ positions: this.positions });
+		return this.edit({ subPositions: this.subPositions });
+	}
+
+	public setPositionTitle(position: UserPositionTitle): Promise<LuyxUser> {
+		return this.edit({ position });
 	}
 
 	public setPrivate(isPrivate: boolean): Promise<LuyxUser> {

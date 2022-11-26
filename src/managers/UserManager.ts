@@ -1,5 +1,6 @@
 import { AxiosResponse } from 'axios';
-import { PatchUserRouteOptions, PostUserRouteOptions, User } from 'luyx-management-api-types/v1';
+import { APIUser, PatchUserRouteOptions, PostUserRouteOptions } from 'luyx-management-api-types/v1';
+
 import { LuyxClient } from '../client/LuyxClient.js';
 import { LuyxUser } from '../structures/User.js';
 import { CachedManager } from './CachedManager.js';
@@ -35,7 +36,7 @@ export class UserManager extends CachedManager<'users'> {
 		return user = this.resolve(data);
 	}
 
-	protected resolve(data: User): LuyxUser {
+	protected resolve(data: APIUser): LuyxUser {
 		return new LuyxUser(this.client, data);
 	}
 }
