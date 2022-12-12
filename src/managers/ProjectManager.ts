@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios';
 import {
-	PatchProjectRouteOptions, PostProjectRouteOptions, APIProject,
+	/*PatchProjectRouteOptions,*/ PostProjectRouteOptions, APIProject,
 } from 'luyx-management-api-types/v1';
 
 import { LuyxClient } from '../client/LuyxClient.js';
@@ -22,16 +22,16 @@ export class ProjectManager extends CachedManager<'projects'> {
 		return this.addCacheEntry(data);
 	}
 
-	public async edit(project: LuyxProject, options: PatchProjectRouteOptions['Body']): Promise<LuyxProject> {
+	// public async edit(project: LuyxProject, options: PatchProjectRouteOptions['Body']): Promise<LuyxProject> {
 
-		const { data, error, message } = (await this.client.rest.patch<PatchProjectRouteOptions['Reply']>(`/${this.route}/${project._id}`, options)).data;
+	// 	const { data, error, message } = (await this.client.rest.patch<PatchProjectRouteOptions['Reply']>(`/${this.route}/${project._id}`, options)).data;
 
-		if (error || !data) {
-			throw new Error(message || 'API Unreachable.');
-		}
+	// 	if (error || !data) {
+	// 		throw new Error(message || 'API Unreachable.');
+	// 	}
 
-		return project = this.resolve(data);
-	}
+	// 	return project = this.resolve(data);
+	// }
 
 	public async import(body: Pick<APIProject, 'deadline' | 'gitHubURL' | 'name'>): Promise<LuyxProject> {
 		const { data, error, message } = (await this.client.rest.post<PostProjectRouteOptions['Reply'], AxiosResponse<PostProjectRouteOptions['Reply']>, Pick<APIProject, 'deadline' | 'gitHubURL' | 'name'>>(`/${this.route}`, body)).data;

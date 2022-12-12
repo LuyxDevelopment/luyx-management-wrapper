@@ -54,7 +54,7 @@ export class LuyxProject extends Base implements APIProject {
 		return true;
 	}
 
-	private edit(data: APIProject): Promise<LuyxProject> {
-		return this.client.projects.edit(this, data);
-	}
+	// private edit(data: APIProject): Promise<LuyxProject> {
+	// 	return this.client.projects.edit(this, data);
+	// }
 }
