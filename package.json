@@ -28,6 +28,6 @@
 		"lint": "eslint --cache --fix",
 		"start": "npm run lint && npm run build && node build/index.js",
 		"check": "npm run lint && tsc --noEmit",
-		"prepublish": "npm run build"
+		"preinstall": "npm run build"
 	}
 }
