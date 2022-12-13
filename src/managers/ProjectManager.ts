@@ -12,7 +12,7 @@ export class ProjectManager extends CachedManager<'projects'> {
 		super('projects', client);
 	}
 
-	public async create(options: Pick<APIProject, 'deadline' | 'description' | 'name'>): Promise<LuyxProject> {
+	public async create(options: Pick<APIProject, 'deadline' | 'description' | 'name' | 'isPrivate'>): Promise<LuyxProject> {
 		const { data, error, message } = (await this.client.rest.post<PostProjectRouteOptions['Reply'], AxiosResponse<PostProjectRouteOptions['Reply']>, PostProjectRouteOptions['Body']>(`/${this.route}`, options)).data;
 
 		if (error || !data) {
