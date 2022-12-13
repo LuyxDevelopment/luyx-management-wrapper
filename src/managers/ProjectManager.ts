@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios';
 import {
-	/*PatchProjectRouteOptions,*/ PostProjectRouteOptions, APIProject,
+	/*PatchProjectRouteOptions,*/ PostProjectRouteOptions, APIProject, PartialPick,
 } from 'luyx-management-api-types/v1';
 
 import { LuyxClient } from '../client/LuyxClient.js';
@@ -12,7 +12,7 @@ export class ProjectManager extends CachedManager<'projects'> {
 		super('projects', client);
 	}
 
-	public async create(options: Pick<APIProject, 'deadline' | 'description' | 'name' | 'isPrivate'>): Promise<LuyxProject> {
+	public async create(options: PartialPick<APIProject, 'isPrivate', 'deadline' | 'description' | 'name'>): Promise<LuyxProject> {
 		const { data, error, message } = (await this.client.rest.post<PostProjectRouteOptions['Reply'], AxiosResponse<PostProjectRouteOptions['Reply']>, PostProjectRouteOptions['Body']>(`/${this.route}`, options)).data;
 
 		if (error || !data) {
