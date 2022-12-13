@@ -14,10 +14,11 @@ export class LuyxProject extends Base implements APIProject {
 	public readonly createdAt;
 	public readonly deadline;
 	public readonly gitHubURL;
+	public readonly isPrivate;
 	public readonly assignedUsers;
 	public readonly wallet;
 
-	public constructor(client: LuyxClient, { _id, assignedUsers, createdAt, deadline, description, gitHubURL, name, wallet }: APIProject) {
+	public constructor(client: LuyxClient, { _id, assignedUsers, createdAt, deadline, description, gitHubURL, isPrivate, name, wallet }: APIProject) {
 		super(client);
 
 		this._id = _id;
@@ -26,6 +27,7 @@ export class LuyxProject extends Base implements APIProject {
 		this.createdAt = createdAt;
 		this.deadline = deadline;
 		this.gitHubURL = gitHubURL;
+		this.isPrivate = isPrivate;
 		this.assignedUsers = assignedUsers;
 		this.wallet = wallet;
 	}
