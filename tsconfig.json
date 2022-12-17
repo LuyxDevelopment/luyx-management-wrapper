@@ -43,7 +43,7 @@
 		"baseUrl": "./src/", /* Base directory to resolve non-absolute module names. */
 		"paths": {
 			"api-types": [
-				"node_modules/luyx-management-api-types"
+				"../node_modules/luyx-management-api-types"
 			]
 		}, /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */
 		"resolveJsonModule": true,
