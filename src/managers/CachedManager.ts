@@ -1,9 +1,10 @@
 import { BaseAuthRouteOptions } from 'luyx-management-api-types/v1';
+import qs from 'querystring';
 
 import { Collection } from '@discordjs/collection';
 
 import { LuyxClient } from '../client/LuyxClient.js';
-import { DataInterface, DataStructure } from '../typings/index.js';
+import { DataInterface, DataQueryInterface, DataStructure } from '../typings/index.js';
 
 export abstract class CachedManager<K extends keyof DataStructure, S extends DataStructure[K] = DataStructure[K], I extends DataInterface[K] = DataInterface[K]> {
 	public readonly cache: Collection<string, S>;
@@ -46,6 +47,10 @@ export abstract class CachedManager<K extends keyof DataStructure, S extends Dat
 
 	protected async fetchSingleDocument(id: string): Promise<I | null> {
 		return (await this.client.rest.get<BaseAuthRouteOptions<I>['Reply']>(`/${this.route}/${id}`)).data.data;
+	}
+
+	protected async fetchQuery(query: DataQueryInterface[K]): Promise<I[] | null> {
+		return (await this.client.rest.get<BaseAuthRouteOptions<I[]>['Reply']>(`/${this.route}?${qs.stringify(query)}`)).data.data;
 	}
 
 	protected abstract resolve(data: I): S;
