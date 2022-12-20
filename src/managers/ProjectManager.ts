@@ -1,7 +1,8 @@
 import { AxiosResponse } from 'axios';
 import {
-	/*PatchProjectRouteOptions,*/ PostProjectRouteOptions, APIProject, PartialPick,
+	APIProject, PartialPick, PatchProjectRouteOptions, PostProjectRouteOptions,
 } from 'luyx-management-api-types/v1';
+import qs from 'querystring';
 
 import { LuyxClient } from '../client/LuyxClient.js';
 import { LuyxProject } from '../structures/Project.js';
@@ -12,36 +13,36 @@ export class ProjectManager extends CachedManager<'projects'> {
 		super('projects', client);
 	}
 
-	public async create(options: PartialPick<APIProject, 'isPrivate', 'deadline' | 'description' | 'name'>): Promise<LuyxProject> {
-		const { data, error, message } = (await this.client.rest.post<PostProjectRouteOptions['Reply'], AxiosResponse<PostProjectRouteOptions['Reply']>, PostProjectRouteOptions['Body']>(`/${this.route}`, options)).data;
+	public async create<R extends PostProjectRouteOptions['Reply'] = PostProjectRouteOptions['Reply'], D extends PartialPick<APIProject, 'isPrivate' | 'stage', 'deadline' | 'description' | 'name'> = PartialPick<APIProject, 'isPrivate' | 'stage', 'deadline' | 'description' | 'name'>>(options: D): Promise<LuyxProject> {
+		const { data, error, message } = (await this.client.rest.post<R, AxiosResponse<R>, D>(`/${this.route}`, options)).data;
 
 		if (error || !data) {
-			throw new Error(message || 'API Unreachable.');
+			throw new Error(message || 'Unknown response from API.');
 		}
 
 		return this.addCacheEntry(data);
 	}
 
-	// public async edit(project: LuyxProject, options: PatchProjectRouteOptions['Body']): Promise<LuyxProject> {
-
-	// 	const { data, error, message } = (await this.client.rest.patch<PatchProjectRouteOptions['Reply']>(`/${this.route}/${project._id}`, options)).data;
-
-	// 	if (error || !data) {
-	// 		throw new Error(message || 'API Unreachable.');
-	// 	}
-
-	// 	return project = this.resolve(data);
-	// }
-
-	public async import(body: Pick<APIProject, 'deadline' | 'gitHubURL' | 'name'>): Promise<LuyxProject> {
-		const { data, error, message } = (await this.client.rest.post<PostProjectRouteOptions['Reply'], AxiosResponse<PostProjectRouteOptions['Reply']>, Pick<APIProject, 'deadline' | 'gitHubURL' | 'name'>>(`/${this.route}`, body)).data;
+	public async edit<R extends PatchProjectRouteOptions['Reply'] = PatchProjectRouteOptions['Reply'], D extends PatchProjectRouteOptions['Body'] = PatchProjectRouteOptions['Body']>(project: LuyxProject, options: D): Promise<LuyxProject> {
+		const { data, error, message } = (await this.client.rest.patch<R, AxiosResponse<R>, D>(`/${this.route}/${project._id}`, options)).data;
 
 		if (error || !data) {
-			throw new Error(message || 'API Unreachable.');
+			throw new Error(message || 'Unknown response from API.');
+		}
+
+		return project = this.resolve(data);
+	}
+
+	public async import<R extends PostProjectRouteOptions['Reply'] = PostProjectRouteOptions['Reply'], D extends Pick<APIProject, 'deadline' | 'name'> = Pick<APIProject, 'deadline' | 'name'>>(options: D): Promise<LuyxProject> {
+		const { data, error, message } = (await this.client.rest.post<R, AxiosResponse<R>, D>(`/${this.route}?${qs.stringify({ import: true })}`, options)).data;
+
+		if (error || !data) {
+			throw new Error(message || 'Unknown response from API.');
 		}
 
 		return this.addCacheEntry(data);
 	}
+
 
 	protected resolve(data: APIProject): LuyxProject {
 		return new LuyxProject(this.client, data);

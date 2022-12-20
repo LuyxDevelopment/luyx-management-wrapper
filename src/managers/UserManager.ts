@@ -10,11 +10,11 @@ export class UserManager extends CachedManager<'users'> {
 		super('users', client);
 	}
 
-	public async create(options: PostUserRouteOptions['Body']): Promise<LuyxUser> {
-		const { data, error, message } = (await this.client.rest.post<PostUserRouteOptions['Reply'], AxiosResponse<PostUserRouteOptions['Reply']>, PostUserRouteOptions['Body']>(`/${this.route}`, options)).data;
+	public async create<R extends PostUserRouteOptions['Reply'] = PostUserRouteOptions['Reply'], D extends PostUserRouteOptions['Body'] = PostUserRouteOptions['Body']>(options: D): Promise<LuyxUser> {
+		const { data, error, message } = (await this.client.rest.post<R, AxiosResponse<R>, D>(`/${this.route}`, options)).data;
 
 		if (error || !data) {
-			throw new Error(message || 'API Unreachable.');
+			throw new Error(message || 'Unknown response from API.');
 		}
 
 		return this.addCacheEntry(data);
@@ -28,8 +28,8 @@ export class UserManager extends CachedManager<'users'> {
 		if (data) return this.addCacheEntry(data);
 	}
 
-	public async edit(user: LuyxUser, options: PatchUserRouteOptions['Body']): Promise<LuyxUser> {
-		const { data, error, message } = (await this.client.rest.patch<PatchUserRouteOptions['Reply']>(`/${this.route}/${user._id}`, options)).data;
+	public async edit<R extends PatchUserRouteOptions['Reply'] = PatchUserRouteOptions['Reply'], D extends PatchUserRouteOptions['Body'] = PatchUserRouteOptions['Body']>(user: LuyxUser, options: D): Promise<LuyxUser> {
+		const { data, error, message } = (await this.client.rest.patch<R, AxiosResponse<R>, D>(`/${this.route}/${user._id}`, options)).data;
 
 		if (error || !data) throw new Error(message);
 
