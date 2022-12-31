@@ -8,7 +8,7 @@ import { Base } from './Base.js';
 export class LuyxUser extends Base implements APIUser {
 	public readonly _id;
 	public readonly alias;
-	public readonly avatar;
+	public readonly avatarURL;
 	public readonly firstName;
 	public readonly lastName;
 	public readonly contact;
@@ -21,12 +21,12 @@ export class LuyxUser extends Base implements APIUser {
 	public readonly projects;
 	public readonly wallet;
 
-	constructor(client: LuyxClient, { _id, alias, avatar, firstName, lastName, contact, hiredAt, info, authorityLevel, position, subPositions, isPrivate, wallet, projects }: APIUser) {
+	constructor(client: LuyxClient, { _id, alias, avatarURL, firstName, lastName, contact, hiredAt, info, authorityLevel, position, subPositions, isPrivate, wallet, projects }: APIUser) {
 		super(client);
 
 		this._id = _id;
 		this.alias = alias;
-		this.avatar = avatar;
+		this.avatarURL = avatarURL;
 		this.contact = contact;
 		this.firstName = firstName;
 		this.hiredAt = hiredAt;
