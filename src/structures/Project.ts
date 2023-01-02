@@ -10,8 +10,9 @@ import { LuyxUser } from './User.js';
 export class LuyxProject extends Base implements APIProject {
 	public readonly _id;
 	public readonly name;
-	public readonly description;
+	public readonly contact;
 	public readonly createdAt;
+	public readonly description;
 	public readonly deadline;
 	public readonly imageURL;
 	public readonly isPrivate;
@@ -19,13 +20,14 @@ export class LuyxProject extends Base implements APIProject {
 	public readonly assignedUsers;
 	public readonly wallet;
 
-	public constructor(client: LuyxClient, { _id, assignedUsers, createdAt, deadline, description, imageURL, isPrivate, name, stage, wallet }: APIProject) {
+	public constructor(client: LuyxClient, { _id, name, contact, createdAt, deadline, description, imageURL, isPrivate, stage, assignedUsers, wallet }: APIProject) {
 		super(client);
 
 		this._id = _id;
 		this.name = name;
-		this.description = description;
+		this.contact = contact;
 		this.createdAt = createdAt;
+		this.description = description;
 		this.deadline = deadline;
 		this.imageURL = imageURL;
 		this.isPrivate = isPrivate;
